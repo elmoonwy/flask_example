@@ -1,0 +1,68 @@
+.before_search {
+    position: absolute;
+    width: 75%;
+    left: 12.5%;
+    top: 10%;
+    min-height: 50%;
+}
+
+.searched {
+    z-index: 10;
+    position: fixed;
+    top: 0%;
+    width: 75%;
+    left: 12.5%;
+    opacity: 0.7;
+
+    border-bottom-left-radius: 75px !important;
+    border-bottom-right-radius: 75px !important;
+}
+
+.searched:hover {
+    opacity: 1;
+}
+
+.photo-wall-item:hover {
+    animation: 0.5s zoom;
+    transform: scale(1.1);
+    z-index: 9;
+}
+
+.photo-wall-item.ng-enter, .photo-wall-item.ng-move{
+    -webkit-transition:0.5s linear all;
+    -moz-transition:0.5s linear all;
+    -o-transition:0.5s linear all;
+    transition:0.5s linear all;
+    opacity:0;
+}
+
+.photo-wall-item.ng-enter.ng-enter-active, .photo-wall-item.ng-move.ng-move-active {
+    opacity:1;
+}
+
+.photo-wall-item.ng-leave {
+    -webkit-animation:0.5s my_animation;
+    -moz-animation:0.5s my_animation;
+    -o-animation:0.5s my_animation;
+    animation:0.5s my_animation;
+}
+
+@-webkit-keyframes my_animation {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
+@-moz-keyframes my_animation {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
+@-o-keyframes my_animation {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
+@-webkit-keyframes zoom {
+    from { transform: scale(1) }
+    to { transform: scale(1.1) }
+}

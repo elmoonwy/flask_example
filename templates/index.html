@@ -1,32 +1,142 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Video Management</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+{% extends "layout.html" %}
+{% block body %}
+<div ng-app="myApp" ng-controller="myController" ng-init="advance_search=false; searched=false; show_search_rule=false;" >
+    <div class="row">
+        {% raw %}
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 photo-wall-item" ng-repeat="record in results" style="padding: 7px;">
+            <a href="#" ng-click="show(record)">
+                <img src="#" class="img-responsive img-rounded" alt="{{record['title']}}" ng-src="{{record['url']}}">
+            </a>
+        </div>
+        {% endraw %}
+    </div>
+    <div class="well" ng-class="{before_search: searched == false, searched: searched == true}">
+        <div class="row">
+            <div ng-show="show_search_rule">
+                {% raw %}
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" ng-repeat="(key, value) in video">
+                    <p>{{key}}: <strong>{{value}}</strong></p>
+                </div>
+                {% endraw %}
+                <div class="col-lg-12 text-center">
+                    <a href="#" class="btn btn-info" ng-click="show_search_rule=!show_search_rule">Edit</a>
+                    <a href="#" class="btn btn-info" ng-click="show_search_rule=!show_search_rule">Create Play List</a>
+                </div>
+            </div>
+            <form class="form-horizontal" action="#" ng-show="!show_search_rule">
+                <fieldset>
+                    <div class="form-group">
+                        <label for="accurate_id" class="control-label col-lg-2">Movie ID</label>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <div class="input-group">
+                                <input ng-model="video.id" class="form-control" type="text" name="accurate_id" id="accurate_id" placeholder="Movie ID"/>
+                                <span class="input-group-addon">
+                                    <div class="checkbox" style="padding-top: 0px;">
+                                        <label>
+                                            Fuzzy Search<input ng-model="video.id_fuzzy" type="checkbox" value="vague_id">
+                                        </label>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="artist_name" class="col-lg-2 control-label">Artist</label>
+                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <input ng-model="video.artist_name" class="form-control" type="text" name="artist_name" id="artist_name" placeholder="Plesase Enter Artist Name"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tag" class="col-lg-2 control-label">Tag</label>
+                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <input ng-model="video.tag" class="form-control" type="text" name="tag" id="tag" placeholder="Please Enter Tag"/>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <a href="#" class="btn btn-default" ng-click="advance_search=!advance_search">Show More</a>
+                    </div>
+                    <div ng-show="advance_search">
+                        <div class="form-group">
+                            <label for="release_period" class="col-lg-2 control-label">Release Period</label>
+                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                <input ng-model="video.release_period" class="form-control" type="date" name="release_period" id="release_period" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="maker" class="col-lg-2 control-label">Maker</label>
+                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                <input ng-model="video.maker" class="form-control" type="text" name="maker" id="maker" placeholder="Please Enter Maker"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="director" class="col-lg-2 control-label">Director</label>
+                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                <input ng-model="video.director" class="form-control" type="text" name="director" id="director" placeholder="Please Enter Director"/>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="text-center" ng-show="!show_search_rule">
+            <button ng-click="search()" id="submit" class="btn btn-success" type="button">Submit</button>
+        </div>
+    </div>
+    {% raw %}
+    <div class="modal" id="my_modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">{{selected.title}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                            <img class="img-responsive" alt="pict" ng-src="{{selected['url']}}">
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <p>Title: <strong>{{selected.title}}</strong></p>
+                            <p>Artist: <strong>{{selected.artist}}</strong></p>
+                            <p>Director: <strong>{{selected.director}}</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Search Seed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endraw %}
+</div>
+{% endblock %}
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-
-        <!--Material Design-->
-        <link rel="style" href="{{url_for('static', filename='bootstrap-material/css/roboto.min.css')}}" type="text/css" />
-        <link rel="style" href="{{url_for('static', filename='bootstrap-material/css/material.min.css')}}" type="text/css" />
-        <link rel="style" href="{{url_for('static', filename='bootstrap-material/css/ripplesmin.css')}}" type="text/css" />
-    </head>
-    <body>
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
-        <script type="text/javascript" src="{{url_for('static', filename='bootstrap-material/js/ripples.min.js')}}"></script>
-        <script type="text/javascript" src="{{url_for('static', filename='bootstrap-material/js/material.min.js')}}"></script>
-        <script type="text/javascript" charset="utf-8">
-            $(function(){
-                    $.material.init()
-                    })
-        </script>
-    </body>
-</html>
+{% block script%}
+<script type="text/javascript" charset="utf-8">
+    var app = angular.module('myApp', ['videoAnimations'])
+    app.controller('myController', ['$scope', '$http', function($scope, $http){
+            $scope.results = [];
+            $scope.selected = {};
+            $scope.search = function(){
+            console.log($scope.video)
+            $http.get('/_search', { params: {data: $scope.video}}).
+            success(function(data, status, headers, config){
+                console.log(data)
+                $scope.results = data["result"]
+                $scope.searched = true
+                $scope.show_search_rule = true
+                }).
+            error(function(data, status, headers, config){
+                console.log(data);
+                })
+            };
+            $scope.show = function(record){
+            console.log(record);
+            $scope.selected = record;
+            $('#my_modal').modal('show');
+            };
+    }])
+</script>
+{% endblock %}
