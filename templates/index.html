@@ -4,9 +4,7 @@
     <div class="row">
         {% raw %}
         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 photo-wall-item" ng-repeat="record in results" style="padding: 7px;">
-            <a href="#" ng-click="show(record)">
-                <img src="#" class="img-responsive img-rounded" alt="{{record['title']}}" ng-src="{{record['url']}}">
-            </a>
+            <a href="#" ng-click="show(record)"><img src="#" class="img-responsive img-rounded" alt="{{record['title']}}" ng-src="{{record['url']}}"></a>
         </div>
         {% endraw %}
     </div>
@@ -25,6 +23,7 @@
             </div>
             <form class="form-horizontal" action="#" ng-show="!show_search_rule">
                 <fieldset>
+                    <legend>Search Video</legend>
                     <div class="form-group">
                         <label for="accurate_id" class="control-label col-lg-2">Movie ID</label>
                         <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
@@ -42,8 +41,17 @@
                     </div>
                     <div class="form-group">
                         <label for="artist_name" class="col-lg-2 control-label">Artist</label>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                            <input ng-model="video.artist_name" class="form-control" type="text" name="artist_name" id="artist_name" placeholder="Plesase Enter Artist Name"/>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <div class="input-group">
+                                <input ng-model="video.artist_name" class="form-control" type="text" name="artist_name" id="artist_name" placeholder="Plesase Enter Artist Name"/>
+                                <span class="input-group-addon">
+                                    <div class="checkbox" style="padding-top: 0px;">
+                                        <label>
+                                            Fuzzy Search<input ng-model="video.artist_name_fuzzy" type="checkbox" value="vague_id">
+                                        </label>
+                                    </div>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -57,9 +65,13 @@
                     </div>
                     <div ng-show="advance_search">
                         <div class="form-group">
-                            <label for="release_period" class="col-lg-2 control-label">Release Period</label>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <input ng-model="video.release_period" class="form-control" type="date" name="release_period" id="release_period" />
+                            <label for="release_period" class="col-lg-2 control-label">Release Period Start:</label>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <input ng-model="video.release_period_start" class="form-control" type="date" name="release_period_start" id="release_period_start" />
+                            </div>
+                            <label for="release_period" class="col-lg-2 control-label">Release Period End:</label>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <input ng-model="video.release_period_end" class="form-control" type="date" name="release_period_end" id="release_period_end" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -79,7 +91,7 @@
             </form>
         </div>
         <div class="text-center" ng-show="!show_search_rule">
-            <button ng-click="search()" id="submit" class="btn btn-success" type="button">Submit</button>
+            <button ng-click="search()" id="submit" class="btn btn-primary" type="button">Submit</button>
         </div>
     </div>
     {% raw %}
@@ -130,12 +142,32 @@
                 }).
             error(function(data, status, headers, config){
                 console.log(data);
-                })
+                });
             };
             $scope.show = function(record){
             console.log(record);
             $scope.selected = record;
             $('#my_modal').modal('show');
+            };
+            $(window).scroll(function(){
+                    var topHeight = $("body").height() - window.innerHeight;
+                    if(topHeight - $(window).scrollTop() < 1000){
+                    $scope.nextPage();
+                    $scope.$apply();
+                    }
+            }.bind(this));
+            $scope.nextPage = function(){
+                if ($scope.searched == false ){
+                    return
+                }
+                $http.get('/_search', { params: {data: $scope.video}}).
+                    success(function(data, status, headers, config){
+                            console.log(data)
+                            Array.prototype.push.apply($scope.results, data["result"])
+                            }).
+                error(function(data, status, headers, config){
+                        console.log(data);
+                        })
             };
     }])
 </script>

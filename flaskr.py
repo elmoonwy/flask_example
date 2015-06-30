@@ -11,7 +11,7 @@ def index():
 
 @app.route('/_search')
 def search():
-    size = random.randint(1,200)
+    size = random.randint(1,20)
     list_result = []
     for x in xrange(0, size):
         list_result.append({
